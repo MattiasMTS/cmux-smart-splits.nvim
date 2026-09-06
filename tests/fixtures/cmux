@@ -1,0 +1,30 @@
+#!/usr/bin/env python3
+import json
+import os
+from pathlib import Path
+import sys
+
+path = Path(os.environ["CMUX_TEST_STATE"])
+state = json.loads(path.read_text())
+args = sys.argv[1:]
+assert args[:3] == ["--json", "--id-format", "uuids"], args
+assert args[-2:] == ["--workspace", "test-workspace"], args
+state["calls"].append(args)
+action = args[3]
+if action == "list-panes":
+    result = {"panes": state["panes"]}
+elif action == "focus-pane":
+    target = args[args.index("--pane") + 1]
+    assert any(pane["id"] == target for pane in state["panes"])
+    for pane in state["panes"]:
+        pane["focused"] = pane["id"] == target
+    result = {}
+elif action == "resize-pane":
+    state["resizes"].append(args)
+    result = {}
+else:
+    raise AssertionError(args)
+temporary = path.with_suffix(".tmp")
+temporary.write_text(json.dumps(state))
+temporary.replace(path)
+print(json.dumps(result))
