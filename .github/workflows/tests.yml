@@ -26,11 +26,11 @@ jobs:
     env:
       SMART_SPLITS_DIR: ${{ github.workspace }}/.test-deps/smart-splits.nvim
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Install smart-splits
-        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: mrjones2014/smart-splits.nvim
           ref: ba2850ff3d3b09785a7105c69d06a12117d4b97d # v2.1.0
