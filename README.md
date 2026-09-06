@@ -1,8 +1,11 @@
 # cmux-smart-splits.nvim
 
+[![Tests](https://github.com/MattiasMTS/cmux-smart-splits.nvim/actions/workflows/tests.yml/badge.svg)](https://github.com/MattiasMTS/cmux-smart-splits.nvim/actions/workflows/tests.yml)
+
 Navigate and resize Neovim windows and cmux panes with smart-splits.nvim v2.
 Requires Neovim 0.11+, the cmux CLI on PATH, and local cmux socket access.
 No dependency on ghostty-smart-splits.nvim.
+cmux must report pane frames and cell dimensions through `list-panes`.
 
 ## Setup
 
@@ -69,3 +72,8 @@ CMUX_TEST_INSTALLED_SHELL=1 python3 tests/shell.py
 Tests cover pane logic, smart-splits integration, and real zsh key handling
 against a simulated cmux CLI. The last command also checks installed zsh startup.
 Actual cmux shortcut interception and GUI focus still need a manual check.
+
+## Contributing
+
+Include a regression test with fixes. For bug reports, include Neovim, cmux,
+and smart-splits versions, reproduction steps, and relevant keybindings.

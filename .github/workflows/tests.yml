@@ -1,0 +1,54 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Neovim ${{ matrix.neovim }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+        neovim: [v0.11.0, stable]
+    env:
+      SMART_SPLITS_DIR: ${{ github.workspace }}/.test-deps/smart-splits.nvim
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Install smart-splits
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          repository: mrjones2014/smart-splits.nvim
+          ref: ba2850ff3d3b09785a7105c69d06a12117d4b97d # v2.1.0
+          path: .test-deps/smart-splits.nvim
+          persist-credentials: false
+      - name: Install Neovim
+        uses: rhysd/action-setup-vim@febef33995d6649302e9d88dda81e071b68f16a7 # v1
+        with:
+          neovim: true
+          version: ${{ matrix.neovim }}
+      - name: Install zsh
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y zsh
+      - name: Unit tests
+        run: nvim --headless -u NONE -i NONE -l tests/run.lua
+      - name: smart-splits integration
+        run: nvim --headless -u NONE -i NONE -l tests/integration.lua
+      - name: Shell integration
+        run: python3 tests/shell.py
