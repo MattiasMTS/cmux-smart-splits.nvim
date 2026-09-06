@@ -77,3 +77,7 @@ Actual cmux shortcut interception and GUI focus still need a manual check.
 
 Include a regression test with fixes. For bug reports, include Neovim, cmux,
 and smart-splits versions, reproduction steps, and relevant keybindings.
+
+## License
+
+[MIT](LICENSE)
