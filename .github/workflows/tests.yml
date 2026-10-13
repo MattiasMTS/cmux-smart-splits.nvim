@@ -33,7 +33,7 @@ jobs:
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           repository: mrjones2014/smart-splits.nvim
-          ref: ba2850ff3d3b09785a7105c69d06a12117d4b97d # v2.1.0
+          ref: 5fd4fe53c2df2009e689f61511e3c474a9eccbaf # v3.0.0
           path: .test-deps/smart-splits.nvim
           persist-credentials: false
       - name: Install Neovim

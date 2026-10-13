@@ -51,12 +51,10 @@ local function check(condition, label)
 end
 
 local smart = require("smart-splits")
-smart.setup({ default_amount = 7, cursor_follows_swapped_bufs = true })
 require("cmux-smart-splits").setup({ executable = vim.v.progpath })
-local config = require("smart-splits.config")
-check(config.default_amount == 7 and config.cursor_follows_swapped_bufs, "preserves smart-splits options")
-check(config.at_edge == "stop", "disables wrapping")
-check(require("smart-splits.mux").get().type == "cmux", "loads cmux adapter through smart-splits")
+smart.setup({ resize = { amount = 7 }, move = { at_edge = "stop" }, mux = { backend = "smart-splits-backend-cmux" } })
+check(#require("smart-splits.config").issues() == 0, "accepts v3 config without warnings")
+check(require("smart-splits.backend").resolve().name == "cmux", "loads cmux backend through smart-splits")
 
 vim.o.columns = 120
 vim.cmd("vsplit")
@@ -81,3 +79,6 @@ local resize = vim.tbl_filter(function(argv)
   return argv[5] == "resize-pane"
 end, calls)[1]
 check(resize[7] == "editor-pane" and resize[10] == "70", "converts configured resize cells to points")
+smart.setup({ move = { at_edge = "split" }, mux = { backend = "smart-splits-backend-cmux" } })
+smart.move_cursor_left()
+check(count("new-split") == 1 and count("focus-pane") == 1, "splits cmux at workspace edge")

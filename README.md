@@ -2,7 +2,7 @@
 
 [![Tests](https://github.com/MattiasMTS/cmux-smart-splits.nvim/actions/workflows/tests.yml/badge.svg)](https://github.com/MattiasMTS/cmux-smart-splits.nvim/actions/workflows/tests.yml)
 
-Navigate and resize Neovim windows and cmux panes with smart-splits.nvim v2.
+Navigate and resize Neovim windows and cmux panes with smart-splits.nvim v3.
 Requires Neovim 0.11+, the cmux CLI on PATH, and local cmux socket access.
 No dependency on ghostty-smart-splits.nvim.
 cmux must report pane frames and cell dimensions through `list-panes`.
@@ -16,12 +16,18 @@ With lazy.nvim (keep your existing smart-splits options and mappings):
   "mrjones2014/smart-splits.nvim",
   lazy = false,
   dependencies = { "MattiasMTS/cmux-smart-splits.nvim" },
-  config = function(_, opts)
-    require("smart-splits").setup(opts)
-    require("cmux-smart-splits").setup()
-  end,
+  opts = {
+    move = { at_edge = "stop" },
+    mux = { backend = "smart-splits-backend-cmux" },
+  },
 }
 ```
+
+`mux.backend` also accepts a list, e.g.
+`{ "smart-splits-backend-cmux", "smart-splits-backend-ghostty" }`; the first
+backend that detects wins. To change the cmux CLI path or timeout, call
+`require("cmux-smart-splits").setup({ executable = "cmux", timeout = 1000 })`
+before `require("smart-splits").setup()`.
 
 In the Ghostty config read by cmux, replace conflicting bindings with:
 
@@ -53,8 +59,8 @@ Run `:checkhealth cmux-smart-splits` to check connectivity and configuration.
 
 ## Limitations
 
-Other TUIs receive keys normally. SSH, nested tmux/zellij, wrapping,
-previous-pane navigation, and zoom detection are unsupported.
+Other TUIs receive keys normally. SSH, nested tmux/zellij, wrapping across
+cmux panes, previous-pane navigation, and zoom detection are unsupported.
 CLI calls are synchronous, with a one-second timeout by default.
 
 ## Tests
